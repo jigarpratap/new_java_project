@@ -19,7 +19,7 @@ export class CustomerComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private banksService: BankService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.customerForm = this.formBuilder.group({
@@ -27,12 +27,13 @@ export class CustomerComponent implements OnInit {
       email: ["", [Validators.required]],
       username: ["", [Validators.required]],
       password: ["", [Validators.required]],
+      role: ["", [Validators.required]]
     });
   }
-  hasSpecialCharacters(inputString:string):boolean {
+  hasSpecialCharacters(inputString: string): boolean {
     // Define a regular expression for special characters
     const specialCharactersRegex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/;
-  
+
     // Test if the inputString contains any special characters
     return specialCharactersRegex.test(inputString);
   }
@@ -44,29 +45,26 @@ export class CustomerComponent implements OnInit {
     if (this.customerForm.invalid) {
       return;
     } else {
-      
-      const data= this.customerForm.value;
-      if(data.password.length < 8)
-      {
+
+      const data = this.customerForm.value;
+      if (data.password.length < 8) {
         this.customerError$ = of("Password must be of 8 characters");
         return;
       }
-      if(this.hasSpecialCharacters(data.username))
-      {
+      if (this.hasSpecialCharacters(data.username)) {
         this.customerError$ = of("User Name must consist of letter and number only!!");
         return;
       }
       console.log(emailRegex.test(data.email));
-      if(!emailRegex.test(data.email))
-      {
+      if (!emailRegex.test(data.email)) {
         this.customerError$ = of("Invalid Email Id!!");
         return;
 
       }
       // const username = name, password = "abcd1234";
-      const customer: Customer = 
-       new Customer(data);
-      
+      const customer: Customer =
+        new Customer(data);
+
       ;
       this.banksService.addCustomer(customer).subscribe(
         (res: any) => {
